@@ -14,8 +14,6 @@ services:
       start_period: 20s
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - internal
 
   api:
     build:
@@ -38,17 +36,6 @@ services:
       timeout: 5s
       retries: 10
       start_period: 45s
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.docker.network=coolify'
-      - "traefik.http.routers.storee-api.rule=Host(`${APP_DOMAIN:-example.com}`) && PathPrefix(`/api`)"
-      - 'traefik.http.routers.storee-api.entrypoints=websecure'
-      - 'traefik.http.routers.storee-api.tls=true'
-      - 'traefik.http.routers.storee-api.priority=100'
-      - 'traefik.http.services.storee-api.loadbalancer.server.port=3000'
-    networks:
-      - internal
-      - coolify
 
   web:
     build:
@@ -67,23 +54,6 @@ services:
       timeout: 5s
       retries: 10
       start_period: 45s
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.docker.network=coolify'
-      - "traefik.http.routers.storee-web.rule=Host(`${APP_DOMAIN:-example.com}`)"
-      - 'traefik.http.routers.storee-web.entrypoints=websecure'
-      - 'traefik.http.routers.storee-web.tls=true'
-      - 'traefik.http.routers.storee-web.priority=1'
-      - 'traefik.http.services.storee-web.loadbalancer.server.port=80'
-    networks:
-      - internal
-      - coolify
 
 volumes:
   postgres_data:
-
-networks:
-  internal:
-    driver: bridge
-  coolify:
-    external: true
