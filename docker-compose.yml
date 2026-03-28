@@ -18,9 +18,11 @@ services:
       - internal
 
   api:
-    image: node:20-alpine
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+    image: storee-api:latest
     restart: unless-stopped
-    working_dir: /app
     depends_on:
       postgres:
         condition: service_healthy
@@ -30,18 +32,6 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-storee}:${POSTGRES_PASSWORD:-change-me-in-coolify}@postgres:5432/${POSTGRES_DB:-storee}
       JWT_SECRET: ${JWT_SECRET:-change-me-in-coolify}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
-      NX_DAEMON: 'false'
-      PNPM_HOME: /pnpm
-      PNPM_STORE_PATH: /pnpm/store
-    command: >-
-      sh -lc "
-      corepack enable &&
-      pnpm install --frozen-lockfile &&
-      pnpm prisma generate --schema=prisma/schema.prisma &&
-      pnpm prisma db push --schema=prisma/schema.prisma &&
-      pnpm nx run api:build:production &&
-      node dist/apps/api/main.js
-      "
     healthcheck:
       test: ['CMD-SHELL', 'wget -qO- http://127.0.0.1:3000/api/docs >/dev/null || exit 1']
       interval: 15s
@@ -56,35 +46,23 @@ services:
       - 'traefik.http.routers.storee-api.tls=true'
       - 'traefik.http.routers.storee-api.priority=100'
       - 'traefik.http.services.storee-api.loadbalancer.server.port=3000'
-    volumes:
-      - ./:/app
-      - api_node_modules:/app/node_modules
-      - api_pnpm_store:/pnpm/store
     networks:
       - internal
       - coolify
 
   web:
-    image: node:20-alpine
+    build:
+      context: .
+      dockerfile: docker/web.Dockerfile
+    image: storee-web:latest
     restart: unless-stopped
-    working_dir: /app
     depends_on:
       api:
         condition: service_healthy
     environment:
       NODE_ENV: production
-      NX_DAEMON: 'false'
-      PNPM_HOME: /pnpm
-      PNPM_STORE_PATH: /pnpm/store
-    command: >-
-      sh -lc "
-      corepack enable &&
-      pnpm install --frozen-lockfile &&
-      pnpm nx run storee:build:production &&
-      pnpm dlx http-server dist/storee/browser -a 0.0.0.0 -p 4200 -c-1
-      "
     healthcheck:
-      test: ['CMD-SHELL', 'wget -qO- http://127.0.0.1:4200 >/dev/null || exit 1']
+      test: ['CMD-SHELL', 'wget -qO- http://127.0.0.1 >/dev/null || exit 1']
       interval: 15s
       timeout: 5s
       retries: 10
@@ -96,21 +74,13 @@ services:
       - 'traefik.http.routers.storee-web.entrypoints=websecure'
       - 'traefik.http.routers.storee-web.tls=true'
       - 'traefik.http.routers.storee-web.priority=1'
-      - 'traefik.http.services.storee-web.loadbalancer.server.port=4200'
-    volumes:
-      - ./:/app
-      - web_node_modules:/app/node_modules
-      - web_pnpm_store:/pnpm/store
+      - 'traefik.http.services.storee-web.loadbalancer.server.port=80'
     networks:
       - internal
       - coolify
 
 volumes:
   postgres_data:
-  api_node_modules:
-  api_pnpm_store:
-  web_node_modules:
-  web_pnpm_store:
 
 networks:
   internal:

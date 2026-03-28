@@ -1,0 +1,9 @@
+.git
+.gitignore
+node_modules
+dist
+.nx
+.vscode
+.DS_Store
+coverage
+*.log
