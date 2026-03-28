@@ -1,0 +1,39 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "bundler",
+    "emitDecoratorMetadata": false,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2022",
+    "module": "preserve",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@storee/data-access-db": ["libs/data-access/db/src/index.ts"],
+      "@storee/data-access-locations": [
+        "libs/data-access/locations/src/index.ts"
+      ],
+      "@storee/data-access-objects": ["libs/data-access/objects/src/index.ts"],
+      "@storee/data-access-settings": [
+        "libs/data-access/settings/src/index.ts"
+      ],
+      "@storee/feature-home": ["libs/feature-home/src/index.ts"],
+      "@storee/feature-search": ["libs/feature-search/src/index.ts"],
+      "@storee/feature-graph": ["libs/feature-graph/src/index.ts"],
+      "@storee/feature-locations": ["libs/feature-locations/src/index.ts"],
+      "@storee/feature-objects": ["libs/feature-objects/src/index.ts"],
+      "@storee/feature-settings": ["libs/feature-settings/src/index.ts"],
+      "@storee/feature-lock": ["libs/feature-lock/src/index.ts"],
+      "@storee/ui": ["libs/ui/src/index.ts"],
+      "@storee/util-i18n": ["libs/util/i18n/src/index.ts"],
+      "@storee/util-auth": ["libs/util/auth/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

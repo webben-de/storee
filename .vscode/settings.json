@@ -1,0 +1,6 @@
+{
+  "i18n-ally.localesPaths": [
+    "libs/util/i18n",
+    "public/assets/i18n"
+  ]
+}

@@ -24,6 +24,7 @@
       },
       "configurations": {
         "production": {
+          "serviceWorker": "ngsw-config.json",
           "budgets": [
             {
               "type": "initial",
@@ -60,9 +61,10 @@
       "defaultConfiguration": "development"
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
+      "executor": "nx:run-commands",
       "options": {
-        "lintFilePatterns": ["./src"]
+        "command": "pnpm biome check ./src ./libs",
+        "cwd": "{workspaceRoot}"
       }
     },
     "serve-static": {

@@ -1,0 +1,10 @@
+{
+  "name": "data-access-settings",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/data-access/settings/src",
+  "prefix": "lib",
+  "tags": [],
+  "projectType": "library",
+  "// targets": "to see all targets run: nx show project data-access-settings --web",
+  "targets": {}
+}

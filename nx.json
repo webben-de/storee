@@ -3,11 +3,7 @@
   "analytics": false,
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
-    "production": [
-      "default",
-      "!{projectRoot}/.eslintrc.json",
-      "!{projectRoot}/eslint.config.mjs"
-    ],
+    "production": ["default", "!{projectRoot}/biome.json"],
     "sharedGlobals": []
   },
   "targetDefaults": {
@@ -16,23 +12,38 @@
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
     },
-    "@nx/eslint:lint": {
+    "lint": {
       "cache": true,
-      "inputs": [
-        "default",
-        "{workspaceRoot}/.eslintrc.json",
-        "{workspaceRoot}/.eslintignore",
-        "{workspaceRoot}/eslint.config.mjs"
-      ]
+      "inputs": ["default", "{workspaceRoot}/biome.json"]
     }
   },
   "generators": {
     "@nx/angular:application": {
       "e2eTestRunner": "none",
-      "linter": "eslint",
+      "linter": "none",
       "style": "css",
       "unitTestRunner": "none"
+    },
+    "@nx/angular:library": {
+      "linter": "none",
+      "unitTestRunner": "none"
+    },
+    "@nx/angular:component": {
+      "style": "css"
     }
   },
-  "defaultProject": "storee"
+  "defaultProject": "storee",
+  "plugins": [
+    {
+      "plugin": "@nx/webpack/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "serveTargetName": "serve",
+        "previewTargetName": "preview",
+        "buildDepsTargetName": "build-deps",
+        "watchDepsTargetName": "watch-deps",
+        "serveStaticTargetName": "serve-static"
+      }
+    }
+  ]
 }

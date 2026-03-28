@@ -1,1 +1,184 @@
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Tokens ──────────────────────────────────────────── */
+:root {
+  --ease-spring:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-in-out:   cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+/* ─── Base ───────────────────────────────────────────────────── */
+@layer base {
+  html {
+    @apply antialiased;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    font-feature-settings: "kern" 1, "liga" 1, "cv01" 1;
+  }
+
+  body {
+    @apply bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100;
+    font-family: 'Outfit', system-ui, sans-serif;
+  }
+
+  /* Keyboard-only focus rings */
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-zinc-50 dark:ring-offset-zinc-950;
+  }
+
+  /* Interactive cursors */
+  button, a, label[for], [role="button"] {
+    @apply cursor-pointer;
+  }
+
+  /* Minimum touch targets (WCAG 2.5.5) */
+  button, a {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Respect motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ─── Components ─────────────────────────────────────────────── */
+@layer components {
+
+  /* Icon button — 44×44 tap target */
+  .btn-icon {
+    @apply flex items-center justify-center w-11 h-11 rounded-xl
+           text-zinc-500 dark:text-zinc-400
+           hover:bg-zinc-100 dark:hover:bg-zinc-800
+           hover:text-zinc-900 dark:hover:text-zinc-100
+           active:scale-[0.92]
+           transition-all duration-[200ms];
+    transition-timing-function: var(--ease-spring);
+  }
+
+  /* Primary CTA button */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           h-11 px-5 rounded-xl
+           bg-brand-600 hover:bg-brand-700
+           text-white font-medium text-sm
+           active:scale-[0.97]
+           transition-all duration-[250ms] shadow-sm
+           shadow-brand-600/20;
+    transition-timing-function: var(--ease-spring);
+  }
+
+  /* Ghost button */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           h-11 px-4 rounded-xl
+           text-zinc-600 dark:text-zinc-400
+           hover:bg-zinc-100 dark:hover:bg-zinc-800
+           hover:text-zinc-900 dark:hover:text-zinc-100
+           active:scale-[0.97]
+           font-medium text-sm
+           transition-all duration-[200ms];
+    transition-timing-function: var(--ease-spring);
+  }
+
+  /* Destructive ghost */
+  .btn-destructive {
+    @apply inline-flex items-center justify-center gap-2
+           h-11 px-4 rounded-xl
+           text-red-600 dark:text-red-400
+           hover:bg-red-50 dark:hover:bg-red-950/40
+           active:scale-[0.97]
+           font-medium text-sm
+           transition-all duration-[200ms];
+    transition-timing-function: var(--ease-spring);
+  }
+
+  /* Section label / eyebrow */
+  .section-label {
+    @apply text-[11px] font-semibold uppercase tracking-widest
+           text-zinc-400 dark:text-zinc-500;
+  }
+
+  /* Card row — elevated on hover */
+  .card-row {
+    @apply flex items-center gap-3 px-4 py-3
+           rounded-2xl border border-zinc-200/80 dark:border-zinc-800
+           bg-white dark:bg-zinc-900
+           hover:border-brand-400/60 hover:shadow-[0_2px_12px_-4px_rgba(59,130,246,0.15)]
+           active:scale-[0.99]
+           transition-all duration-[250ms] cursor-pointer;
+    transition-timing-function: var(--ease-spring);
+    min-height: 60px;
+  }
+
+  /* Staggered list item — set --index on the element */
+  .stagger-item {
+    animation: staggerFadeUp 0.45s var(--ease-spring) both;
+    animation-delay: calc(var(--index, 0) * 55ms);
+    will-change: transform, opacity;
+  }
+
+  /* Form input */
+  .form-input {
+    @apply w-full h-11 px-3.5 rounded-xl
+           border border-zinc-300 dark:border-zinc-700
+           bg-white dark:bg-zinc-900
+           text-zinc-900 dark:text-zinc-100
+           placeholder-zinc-400 dark:placeholder-zinc-600
+           text-sm font-[450]
+           focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500
+           transition-[border-color,box-shadow] duration-[200ms];
+  }
+
+  /* Form textarea */
+  .form-textarea {
+    @apply w-full px-3.5 py-3 rounded-xl
+           border border-zinc-300 dark:border-zinc-700
+           bg-white dark:bg-zinc-900
+           text-zinc-900 dark:text-zinc-100
+           placeholder-zinc-400
+           text-sm font-[450]
+           focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500
+           transition-[border-color,box-shadow] duration-[200ms];
+  }
+
+  /* Form label */
+  .form-label {
+    @apply block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5;
+  }
+
+  /* Skeleton shimmer */
+  .skeleton {
+    @apply rounded-xl bg-zinc-200 dark:bg-zinc-800;
+    background-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255,255,255,0.4) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+/* ─── Keyframes ──────────────────────────────────────────────── */
+@keyframes staggerFadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
