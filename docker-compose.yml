@@ -30,12 +30,12 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-storee}:${POSTGRES_PASSWORD:-change-me-in-coolify}@postgres:5432/${POSTGRES_DB:-storee}
       JWT_SECRET: ${JWT_SECRET:-change-me-in-coolify}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
-    # healthcheck:
-    #   test: ['CMD-SHELL', 'wget -qO- http://127.0.0.1:3000/api/docs >/dev/null || exit 1']
-    #   interval: 15s
-    #   timeout: 5s
-    #   retries: 10
-    #   start_period: 45s
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://127.0.0.1:3000/api/docs >/dev/null || exit 1']
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 45s
 
   web:
     build:
