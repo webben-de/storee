@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -29,7 +27,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      DATABASE_URL: postgresql://${POSTGRES_USER:-storee}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-storee}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-storee}:${POSTGRES_PASSWORD:-change-me-in-coolify}@postgres:5432/${POSTGRES_DB:-storee}
       JWT_SECRET: ${JWT_SECRET:-change-me-in-coolify}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
       NX_DAEMON: 'false'
