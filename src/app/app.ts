@@ -40,8 +40,8 @@ export class App implements OnInit {
     this.router.events
       .pipe(filter((e) => e instanceof NavigationEnd))
       .subscribe((e) => {
-        this.showNav = !(e as NavigationEnd).url.startsWith('/lock');
+        const url = (e as NavigationEnd).url;
+        this.showNav = !url.startsWith('/lock') && !url.startsWith('/login');
       });
   }
 }
-

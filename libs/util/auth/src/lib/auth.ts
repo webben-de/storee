@@ -1,6 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { db } from '@storee/data-access-db';
+import { ApiAuthService } from './api-auth.service';
 
 const SESSION_KEY = 'storee_unlocked';
 
@@ -33,8 +34,16 @@ export function lockSession(): void {
 
 export const AuthGuard: CanActivateFn = async () => {
   const router = inject(Router);
+  const apiAuth = inject(ApiAuthService);
+
+  // Layer 1: must be authenticated via API JWT
+  if (!apiAuth.isLoggedIn()) {
+    return router.createUrlTree(['/login']);
+  }
+
+  // Layer 2: if a local PIN is configured, session must be unlocked
   const pinSetting = await db.settings.get('pin_hash');
-  if (!pinSetting) return true; // no PIN configured
+  if (!pinSetting) return true;
   if (isSessionUnlocked()) return true;
   return router.createUrlTree(['/lock']);
 };

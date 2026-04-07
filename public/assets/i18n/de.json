@@ -77,6 +77,20 @@
     "import": "JSON importieren",
     "import_confirm": "Dies ersetzt alle deine Daten. Fortfahren?"
   },
+  "auth": {
+    "loginTitle": "Willkommen zurück",
+    "loginHint": "Melde dich bei Storee an.",
+    "registerTitle": "Konto erstellen",
+    "registerHint": "Fange an, deine Dinge zu verwalten.",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "loginBtn": "Anmelden",
+    "registerBtn": "Konto erstellen",
+    "noAccount": "Noch kein Konto?",
+    "hasAccount": "Bereits ein Konto?",
+    "registerLink": "Registrieren",
+    "loginLink": "Anmelden"
+  },
   "lock": {
     "title": "PIN eingeben",
     "hint": "Gib deinen PIN ein, um Storee zu entsperren.",

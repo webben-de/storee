@@ -77,6 +77,20 @@
     "import": "Import JSON",
     "import_confirm": "This will replace all your data. Continue?"
   },
+  "auth": {
+    "loginTitle": "Welcome back",
+    "loginHint": "Sign in to your Storee account.",
+    "registerTitle": "Create account",
+    "registerHint": "Start tracking your belongings.",
+    "email": "Email",
+    "password": "Password",
+    "loginBtn": "Sign in",
+    "registerBtn": "Create account",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "registerLink": "Sign up",
+    "loginLink": "Sign in"
+  },
   "lock": {
     "title": "Enter PIN",
     "hint": "Enter your PIN to unlock Storee.",
