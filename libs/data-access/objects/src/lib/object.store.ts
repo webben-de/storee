@@ -1,12 +1,23 @@
 import { inject } from '@angular/core';
-import { signalStore, withState, withMethods, withComputed, patchState } from '@ngrx/signals';
+import {
+  signalStore,
+  withState,
+  withMethods,
+  withComputed,
+  patchState,
+} from '@ngrx/signals';
 import { computed } from '@angular/core';
 import { liveQuery } from 'dexie';
 import { from } from 'rxjs';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { tapResponse } from '@ngrx/operators';
 import { switchMap } from 'rxjs/operators';
-import { db, type StoreeObject, type ObjectHistory, SyncService } from '@storee/data-access-db';
+import {
+  db,
+  type StoreeObject,
+  type ObjectHistory,
+  SyncService,
+} from '@storee/data-access-db';
 import { v4 as uuid } from 'uuid';
 
 interface ObjectState {
@@ -19,9 +30,12 @@ export const ObjectStore = signalStore(
   { providedIn: 'root' },
   withState<ObjectState>({ objects: [], loading: false, error: null }),
   withComputed(({ objects }) => ({
-    getById: computed(() => (id: string) => objects().find((o) => o.id === id) ?? null),
+    getById: computed(
+      () => (id: string) => objects().find((o) => o.id === id) ?? null,
+    ),
     getByLocation: computed(
-      () => (locationId: string) => objects().filter((o) => o.location_id === locationId),
+      () => (locationId: string) =>
+        objects().filter((o) => o.location_id === locationId),
     ),
   })),
   withMethods((store) => {
@@ -33,10 +47,14 @@ export const ObjectStore = signalStore(
           // syncAll is shared with LocationStore — runs once, second call is a no-op delta fetch
           from(syncSvc.syncAll().catch(() => {})).pipe(
             switchMap(() =>
-              from(liveQuery(() => db.objects.orderBy('created_at').toArray())).pipe(
+              from(
+                liveQuery(() => db.objects.orderBy('created_at').toArray()),
+              ).pipe(
                 tapResponse({
-                  next: (objs) => patchState(store, { objects: objs, loading: false }),
-                  error: (e: Error) => patchState(store, { error: e.message, loading: false }),
+                  next: (objs) =>
+                    patchState(store, { objects: objs, loading: false }),
+                  error: (e: Error) =>
+                    patchState(store, { error: e.message, loading: false }),
                 }),
               ),
             ),
@@ -49,7 +67,12 @@ export const ObjectStore = signalStore(
       ): Promise<string> {
         const now = Date.now();
         const id = uuid();
-        const obj: StoreeObject = { ...data, id, created_at: now, updated_at: now };
+        const obj: StoreeObject = {
+          ...data,
+          id,
+          created_at: now,
+          updated_at: now,
+        };
         await db.transaction('rw', db.objects, db.objectHistory, async () => {
           await db.objects.add(obj);
           await db.objectHistory.add({
@@ -90,7 +113,12 @@ export const ObjectStore = signalStore(
             moved_at: now,
           });
         });
-        syncSvc.updateObjectRemote(objectId, { location_id: toLocationId, updated_at: now }).catch(console.error);
+        syncSvc
+          .updateObjectRemote(objectId, {
+            location_id: toLocationId,
+            updated_at: now,
+          })
+          .catch(console.error);
       },
 
       async remove(id: string): Promise<void> {
@@ -102,9 +130,11 @@ export const ObjectStore = signalStore(
       },
 
       async getHistory(objectId: string): Promise<ObjectHistory[]> {
-        return db.objectHistory.where('object_id').equals(objectId).sortBy('moved_at');
+        return db.objectHistory
+          .where('object_id')
+          .equals(objectId)
+          .sortBy('moved_at');
       },
     };
   }),
 );
-

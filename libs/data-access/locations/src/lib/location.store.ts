@@ -1,5 +1,11 @@
 import { inject } from '@angular/core';
-import { signalStore, withState, withMethods, withComputed, patchState } from '@ngrx/signals';
+import {
+  signalStore,
+  withState,
+  withMethods,
+  withComputed,
+  patchState,
+} from '@ngrx/signals';
 import { computed } from '@angular/core';
 import { liveQuery } from 'dexie';
 import { from } from 'rxjs';
@@ -11,7 +17,10 @@ import { v4 as uuid } from 'uuid';
 
 export type LocationTree = Location & { children: LocationTree[] };
 
-function buildTree(locations: Location[], parentId: string | null = null): LocationTree[] {
+function buildTree(
+  locations: Location[],
+  parentId: string | null = null,
+): LocationTree[] {
   return locations
     .filter((l) => l.parent_id === parentId)
     .sort((a, b) => a.sort_order - b.sort_order)
@@ -28,11 +37,16 @@ export const LocationStore = signalStore(
   { providedIn: 'root' },
   withState<LocationState>({ locations: [], loading: false, error: null }),
   withComputed(({ locations }) => ({
-    rootLocations: computed(() => locations().filter((l) => l.parent_id === null)),
+    rootLocations: computed(() =>
+      locations().filter((l) => l.parent_id === null),
+    ),
     tree: computed(() => buildTree(locations())),
-    getById: computed(() => (id: string) => locations().find((l) => l.id === id) ?? null),
+    getById: computed(
+      () => (id: string) => locations().find((l) => l.id === id) ?? null,
+    ),
     getChildren: computed(
-      () => (parentId: string) => locations().filter((l) => l.parent_id === parentId),
+      () => (parentId: string) =>
+        locations().filter((l) => l.parent_id === parentId),
     ),
   })),
   withMethods((store) => {
@@ -44,10 +58,14 @@ export const LocationStore = signalStore(
           // Pull from server first (errors ignored for offline support), then live-read Dexie
           from(syncSvc.syncAll().catch(() => {})).pipe(
             switchMap(() =>
-              from(liveQuery(() => db.locations.orderBy('sort_order').toArray())).pipe(
+              from(
+                liveQuery(() => db.locations.orderBy('sort_order').toArray()),
+              ).pipe(
                 tapResponse({
-                  next: (locs) => patchState(store, { locations: locs, loading: false }),
-                  error: (e: Error) => patchState(store, { error: e.message, loading: false }),
+                  next: (locs) =>
+                    patchState(store, { locations: locs, loading: false }),
+                  error: (e: Error) =>
+                    patchState(store, { error: e.message, loading: false }),
                 }),
               ),
             ),
@@ -55,7 +73,9 @@ export const LocationStore = signalStore(
         ),
       ),
 
-      async create(data: Omit<Location, 'id' | 'created_at' | 'updated_at'>): Promise<string> {
+      async create(
+        data: Omit<Location, 'id' | 'created_at' | 'updated_at'>,
+      ): Promise<string> {
         const now = Date.now();
         const id = uuid();
         const loc: Location = { ...data, id, created_at: now, updated_at: now };
@@ -64,7 +84,10 @@ export const LocationStore = signalStore(
         return id;
       },
 
-      async update(id: string, changes: Partial<Omit<Location, 'id' | 'created_at'>>): Promise<void> {
+      async update(
+        id: string,
+        changes: Partial<Omit<Location, 'id' | 'created_at'>>,
+      ): Promise<void> {
         const fullChanges = { ...changes, updated_at: Date.now() };
         await db.locations.update(id, fullChanges);
         syncSvc.updateLocationRemote(id, fullChanges).catch(console.error);
@@ -79,4 +102,3 @@ export const LocationStore = signalStore(
     };
   }),
 );
-

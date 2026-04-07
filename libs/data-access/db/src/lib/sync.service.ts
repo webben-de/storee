@@ -70,7 +70,11 @@ export class SyncService {
     // On first sync, push all local data to the server
     const isFirstSync = lastSyncAt === 0;
     const [localLocs, localObjs, localHist] = isFirstSync
-      ? await Promise.all([db.locations.toArray(), db.objects.toArray(), db.objectHistory.toArray()])
+      ? await Promise.all([
+          db.locations.toArray(),
+          db.objects.toArray(),
+          db.objectHistory.toArray(),
+        ])
       : [[], [], []];
 
     const response = await firstValueFrom(
@@ -84,55 +88,79 @@ export class SyncService {
       }),
     );
 
-    await db.transaction('rw', db.locations, db.objects, db.objectHistory, async () => {
-      for (const loc of response.locations) {
-        if (loc.deletedAt) {
-          await db.locations.delete(loc.id);
-        } else {
-          await db.locations.put(this.apiLocToLocal(loc));
+    await db.transaction(
+      'rw',
+      db.locations,
+      db.objects,
+      db.objectHistory,
+      async () => {
+        for (const loc of response.locations) {
+          if (loc.deletedAt) {
+            await db.locations.delete(loc.id);
+          } else {
+            await db.locations.put(this.apiLocToLocal(loc));
+          }
         }
-      }
-      for (const obj of response.objects) {
-        if (obj.deletedAt) {
-          await db.objects.delete(obj.id);
-        } else {
-          await db.objects.put(this.apiObjToLocal(obj));
+        for (const obj of response.objects) {
+          if (obj.deletedAt) {
+            await db.objects.delete(obj.id);
+          } else {
+            await db.objects.put(this.apiObjToLocal(obj));
+          }
         }
-      }
-      for (const h of response.objectHistory) {
-        await db.objectHistory.put(this.apiHistToLocal(h));
-      }
-    });
+        for (const h of response.objectHistory) {
+          await db.objectHistory.put(this.apiHistToLocal(h));
+        }
+      },
+    );
 
-    await db.settings.put({ key: 'last_sync_at', value: String(response.syncedAt) });
+    await db.settings.put({
+      key: 'last_sync_at',
+      value: String(response.syncedAt),
+    });
   }
 
   // ── Location REST ──────────────────────────────────────────────────────────
 
   createLocationRemote(loc: Location): Promise<void> {
-    return firstValueFrom(this.http.post(`/api/locations`, this.localLocToDto(loc))).then(() => undefined);
+    return firstValueFrom(
+      this.http.post(`/api/locations`, this.localLocToDto(loc)),
+    ).then(() => undefined);
   }
 
   updateLocationRemote(id: string, changes: Partial<Location>): Promise<void> {
-    return firstValueFrom(this.http.patch(`/api/locations/${id}`, this.partialLocToDto(changes))).then(() => undefined);
+    return firstValueFrom(
+      this.http.patch(`/api/locations/${id}`, this.partialLocToDto(changes)),
+    ).then(() => undefined);
   }
 
   deleteLocationRemote(id: string): Promise<void> {
-    return firstValueFrom(this.http.delete(`/api/locations/${id}`)).then(() => undefined);
+    return firstValueFrom(this.http.delete(`/api/locations/${id}`)).then(
+      () => undefined,
+    );
   }
 
   // ── Object REST ────────────────────────────────────────────────────────────
 
   createObjectRemote(obj: StoreeObject): Promise<void> {
-    return firstValueFrom(this.http.post(`/api/objects`, this.localObjToDto(obj))).then(() => undefined);
+    return firstValueFrom(
+      this.http.post(`/api/objects`, this.localObjToDto(obj)),
+    ).then(() => undefined);
   }
 
-  updateObjectRemote(id: string, changes: Partial<StoreeObject>): Promise<void> {
-    return firstValueFrom(this.http.patch(`/api/objects/${id}`, this.partialObjToDto(changes))).then(() => undefined);
+  updateObjectRemote(
+    id: string,
+    changes: Partial<StoreeObject>,
+  ): Promise<void> {
+    return firstValueFrom(
+      this.http.patch(`/api/objects/${id}`, this.partialObjToDto(changes)),
+    ).then(() => undefined);
   }
 
   deleteObjectRemote(id: string): Promise<void> {
-    return firstValueFrom(this.http.delete(`/api/objects/${id}`)).then(() => undefined);
+    return firstValueFrom(this.http.delete(`/api/objects/${id}`)).then(
+      () => undefined,
+    );
   }
 
   // ── API (camelCase) → Dexie (snake_case) ──────────────────────────────────
@@ -202,7 +230,8 @@ export class SyncService {
     const dto: Record<string, unknown> = {};
     if (changes.parent_id !== undefined) dto['parentId'] = changes.parent_id;
     if (changes.name !== undefined) dto['name'] = changes.name;
-    if (changes.description !== undefined) dto['description'] = changes.description;
+    if (changes.description !== undefined)
+      dto['description'] = changes.description;
     if (changes.icon !== undefined) dto['icon'] = changes.icon;
     if (changes.gps_lat !== undefined) dto['gpsLat'] = changes.gps_lat;
     if (changes.gps_lng !== undefined) dto['gpsLng'] = changes.gps_lng;
@@ -229,11 +258,15 @@ export class SyncService {
     };
   }
 
-  private partialObjToDto(changes: Partial<StoreeObject>): Record<string, unknown> {
+  private partialObjToDto(
+    changes: Partial<StoreeObject>,
+  ): Record<string, unknown> {
     const dto: Record<string, unknown> = {};
-    if (changes.location_id !== undefined) dto['locationId'] = changes.location_id;
+    if (changes.location_id !== undefined)
+      dto['locationId'] = changes.location_id;
     if (changes.name !== undefined) dto['name'] = changes.name;
-    if (changes.description !== undefined) dto['description'] = changes.description;
+    if (changes.description !== undefined)
+      dto['description'] = changes.description;
     if (changes.category !== undefined) dto['category'] = changes.category;
     if (changes.tags !== undefined) dto['tags'] = changes.tags;
     if (changes.image_uri !== undefined) dto['imageUri'] = changes.image_uri;
