@@ -5,7 +5,7 @@ ENV PNPM_HOME=/pnpm
 ENV PATH=$PNPM_HOME:$PATH
 
 RUN apt-get update \
-	&& apt-get install -y --no-install-recommends openssl ca-certificates \
+	&& apt-get install -y --no-install-recommends openssl ca-certificates wget \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN corepack enable
