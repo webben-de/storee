@@ -16,7 +16,11 @@ async function bootstrap() {
 
   // CORS
   app.enableCors({
-    origin: ['http://localhost:4200', 'http://localhost:4300'],
+    origin: [
+      'http://localhost:4200',
+      'http://localhost:4300',
+      'https://storee.ben-io.de',
+    ],
     credentials: true,
   });
 
@@ -34,8 +38,8 @@ async function bootstrap() {
     .setTitle('Storee API')
     .setDescription(
       'REST API for Storee — a local-first physical object tracker.\n\n' +
-      'Authenticate with `POST /api/auth/login` to get a JWT, ' +
-      'then click **Authorize** and paste `Bearer <token>`.',
+        'Authenticate with `POST /api/auth/login` to get a JWT, ' +
+        'then click **Authorize** and paste `Bearer <token>`.',
     )
     .setVersion('1.0')
     .addBearerAuth()
