@@ -97,6 +97,13 @@
     "wrong": "Falscher PIN. Nochmal versuchen.",
     "unlock": "Entsperren"
   },
+  "label": {
+    "title": "Etikett drucken",
+    "copy": "Kopieren",
+    "copied": "Kopiert!",
+    "download": "PNG herunterladen",
+    "print": "Drucken"
+  },
   "common": {
     "save": "Speichern",
     "cancel": "Abbrechen",

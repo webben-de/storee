@@ -97,6 +97,13 @@
     "wrong": "Incorrect PIN. Try again.",
     "unlock": "Unlock"
   },
+  "label": {
+    "title": "Print Label",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "download": "Download PNG",
+    "print": "Print"
+  },
   "common": {
     "save": "Save",
     "cancel": "Cancel",

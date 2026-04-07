@@ -17,11 +17,12 @@ import type {
   ObjectHistory,
   Location,
 } from '@storee/data-access-db';
+import { LabelPreviewComponent } from './label-preview.component';
 
 @Component({
   selector: 'lib-object-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslocoModule, IconComponent],
+  imports: [CommonModule, RouterModule, TranslocoModule, IconComponent, LabelPreviewComponent],
   template: `
     <div class="p-4 lg:p-6 max-w-2xl mx-auto">
       @if (obj(); as o) {
@@ -45,6 +46,14 @@ import type {
           >
             <app-icon name="pencil" [size]="18" />
           </a>
+          <button
+            (click)="showLabel.set(true)"
+            class="btn-icon"
+            [attr.aria-label]="'label.title' | transloco"
+            title="Print label"
+          >
+            <app-icon name="qr-code" [size]="18" />
+          </button>
         </header>
 
         @if (o.image_uri) {
@@ -183,6 +192,14 @@ import type {
           }
         </section>
       }
+
+      @if (showLabel() && obj()) {
+        <lib-label-preview
+          [obj]="obj()!"
+          [locationPath]="locationPath()"
+          (close)="showLabel.set(false)"
+        />
+      }
     </div>
   `,
 })
@@ -195,6 +212,7 @@ export class ObjectDetailComponent {
   obj = signal<StoreeObject | null>(null);
   history = signal<ObjectHistory[]>([]);
   locationName = signal('');
+  showLabel = signal(false);
 
   locationPath = computed<Location[]>(() => {
     const o = this.obj();
