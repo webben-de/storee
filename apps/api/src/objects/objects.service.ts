@@ -42,8 +42,8 @@ export class ObjectsService {
         gpsLat: dto.gpsLat ?? null,
         gpsLng: dto.gpsLng ?? null,
         quantity: dto.quantity ?? 1,
-        createdAt: BigInt(dto.createdAt),
-        updatedAt: BigInt(dto.updatedAt),
+        createdAt: BigInt(Math.round(dto.createdAt)),
+        updatedAt: BigInt(Math.round(dto.updatedAt)),
       },
     });
   }

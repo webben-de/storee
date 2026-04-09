@@ -33,9 +33,9 @@ export class LocationsService {
         gpsLat: dto.gpsLat ?? null,
         gpsLng: dto.gpsLng ?? null,
         imageUri: dto.imageUri ?? null,
-        sortOrder: BigInt(dto.sortOrder),
-        createdAt: BigInt(dto.createdAt),
-        updatedAt: BigInt(dto.updatedAt),
+        sortOrder: BigInt(Math.round(dto.sortOrder)),
+        createdAt: BigInt(Math.round(dto.createdAt)),
+        updatedAt: BigInt(Math.round(dto.updatedAt)),
       },
     });
   }

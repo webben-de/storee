@@ -1,6 +1,8 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { join } from 'path';
+import { existsSync, mkdirSync } from 'fs';
 import { AppModule } from './app/app.module';
 
 // Prisma returns BigInt for timestamp fields — serialize them as numbers
@@ -13,6 +15,10 @@ async function bootstrap() {
 
   // Global prefix
   app.setGlobalPrefix('api');
+
+  // Ensure uploads directory exists
+  const uploadsDir = join(process.cwd(), 'uploads');
+  if (!existsSync(uploadsDir)) mkdirSync(uploadsDir, { recursive: true });
 
   // CORS
   app.enableCors({

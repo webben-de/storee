@@ -16,7 +16,7 @@ export class SyncService {
    */
   async sync(userId: string, dto: SyncRequestDto) {
     const now = BigInt(Date.now());
-    const since = BigInt(dto.lastSyncAt);
+    const since = BigInt(Math.round(dto.lastSyncAt));
 
     await this.prisma.$transaction(async (tx) => {
       // ── 1. Soft-delete locations ──────────────────────────────────────────
@@ -38,7 +38,7 @@ export class SyncService {
       // ── 3. Upsert locations ───────────────────────────────────────────────
       for (const loc of dto.locations) {
         const existing = await tx.location.findFirst({ where: { id: loc.id, userId } });
-        if (!existing || existing.updatedAt < BigInt(loc.updatedAt)) {
+        if (!existing || existing.updatedAt < BigInt(Math.round(loc.updatedAt))) {
           await tx.location.upsert({
             where: { id: loc.id },
             create: {
@@ -51,9 +51,9 @@ export class SyncService {
               gpsLat: loc.gpsLat ?? null,
               gpsLng: loc.gpsLng ?? null,
               imageUri: loc.imageUri ?? null,
-              sortOrder: BigInt(loc.sortOrder),
-              createdAt: BigInt(loc.createdAt),
-              updatedAt: BigInt(loc.updatedAt),
+              sortOrder: BigInt(Math.round(loc.sortOrder)),
+              createdAt: BigInt(Math.round(loc.createdAt)),
+              updatedAt: BigInt(Math.round(loc.updatedAt)),
             },
             update: {
               parentId: loc.parentId ?? null,
@@ -63,8 +63,8 @@ export class SyncService {
               gpsLat: loc.gpsLat ?? null,
               gpsLng: loc.gpsLng ?? null,
               imageUri: loc.imageUri ?? null,
-              sortOrder: BigInt(loc.sortOrder),
-              updatedAt: BigInt(loc.updatedAt),
+              sortOrder: BigInt(Math.round(loc.sortOrder)),
+              updatedAt: BigInt(Math.round(loc.updatedAt)),
             },
           });
         }
@@ -73,7 +73,7 @@ export class SyncService {
       // ── 4. Upsert objects ─────────────────────────────────────────────────
       for (const obj of dto.objects) {
         const existing = await tx.storeeObject.findFirst({ where: { id: obj.id, userId } });
-        if (!existing || existing.updatedAt < BigInt(obj.updatedAt)) {
+        if (!existing || existing.updatedAt < BigInt(Math.round(obj.updatedAt))) {
           await tx.storeeObject.upsert({
             where: { id: obj.id },
             create: {
@@ -88,8 +88,8 @@ export class SyncService {
               gpsLat: obj.gpsLat ?? null,
               gpsLng: obj.gpsLng ?? null,
               quantity: obj.quantity ?? 1,
-              createdAt: BigInt(obj.createdAt),
-              updatedAt: BigInt(obj.updatedAt),
+              createdAt: BigInt(Math.round(obj.createdAt)),
+              updatedAt: BigInt(Math.round(obj.updatedAt)),
             },
             update: {
               locationId: obj.locationId,
@@ -101,7 +101,7 @@ export class SyncService {
               gpsLat: obj.gpsLat ?? null,
               gpsLng: obj.gpsLng ?? null,
               quantity: obj.quantity ?? 1,
-              updatedAt: BigInt(obj.updatedAt),
+              updatedAt: BigInt(Math.round(obj.updatedAt)),
             },
           });
         }
@@ -117,7 +117,7 @@ export class SyncService {
             objectId: h.objectId,
             fromLocationId: h.fromLocationId ?? null,
             toLocationId: h.toLocationId,
-            movedAt: BigInt(h.movedAt),
+            movedAt: BigInt(Math.round(h.movedAt)),
           },
           update: {},
         });
