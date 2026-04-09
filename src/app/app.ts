@@ -5,6 +5,7 @@ import { filter } from 'rxjs/operators';
 import { TranslocoModule } from '@jsverse/transloco';
 import { IconComponent } from './components/icon.component';
 import { SettingsStore } from '@storee/data-access-settings';
+import { ListStore } from '@storee/data-access-lists';
 import { LocationStore } from '@storee/data-access-locations';
 import { ObjectStore } from '@storee/data-access-objects';
 
@@ -18,6 +19,7 @@ export class App implements OnInit {
   private settingsStore = inject(SettingsStore);
   private locationStore = inject(LocationStore);
   private objectStore = inject(ObjectStore);
+  private listStore = inject(ListStore);
   private router = inject(Router);
 
   showNav = true;
@@ -25,6 +27,7 @@ export class App implements OnInit {
   readonly navItems = [
     { path: '/', label: 'nav.home', icon: 'house' },
     { path: '/search', label: 'nav.search', icon: 'search' },
+    { path: '/lists', label: 'nav.lists', icon: 'clipboard-list' },
     { path: '/graph', label: 'nav.graph', icon: 'git-graph' },
     { path: '/settings', label: 'nav.settings', icon: 'settings' },
   ];
@@ -33,6 +36,7 @@ export class App implements OnInit {
     await this.settingsStore.load();
     this.locationStore.loadAll(undefined as never);
     this.objectStore.loadAll(undefined as never);
+    this.listStore.loadAll(undefined as never);
 
     const theme = this.settingsStore.theme();
     document.documentElement.classList.toggle('dark', theme === 'dark');

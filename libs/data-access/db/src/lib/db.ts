@@ -42,11 +42,31 @@ export interface Setting {
   value: string;
 }
 
+export interface StoreeList {
+  id: string;
+  name: string;
+  description: string;
+  created_at: number;
+  updated_at: number;
+}
+
+export interface StoreeListItem {
+  id: string;
+  list_id: string;
+  object_id: string | null;
+  custom_label: string | null;
+  checked: boolean;
+  sort_order: number;
+  created_at: number;
+}
+
 class StoreeDB extends Dexie {
   locations!: EntityTable<Location, 'id'>;
   objects!: EntityTable<StoreeObject, 'id'>;
   objectHistory!: EntityTable<ObjectHistory, 'id'>;
   settings!: EntityTable<Setting, 'key'>;
+  lists!: EntityTable<StoreeList, 'id'>;
+  listItems!: EntityTable<StoreeListItem, 'id'>;
 
   constructor() {
     super('StoreeDB');
@@ -55,6 +75,14 @@ class StoreeDB extends Dexie {
       objects: 'id, location_id, name, category, created_at',
       objectHistory: 'id, object_id, moved_at',
       settings: 'key',
+    });
+    this.version(2).stores({
+      locations: 'id, parent_id, name, sort_order, created_at',
+      objects: 'id, location_id, name, category, created_at',
+      objectHistory: 'id, object_id, moved_at',
+      settings: 'key',
+      lists: 'id, name, created_at',
+      listItems: 'id, list_id, object_id, checked',
     });
   }
 }

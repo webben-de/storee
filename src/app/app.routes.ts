@@ -46,6 +46,11 @@ export const appRoutes: Route[] = [
         loadChildren: () =>
           import('@storee/feature-objects').then((m) => m.OBJECT_ROUTES),
       },
+      {
+        path: 'lists',
+        loadChildren: () =>
+          import('@storee/feature-lists').then((m) => m.LISTS_ROUTES),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

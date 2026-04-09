@@ -30,6 +30,8 @@
       "@storee/feature-objects": ["libs/feature-objects/src/index.ts"],
       "@storee/feature-settings": ["libs/feature-settings/src/index.ts"],
       "@storee/feature-lock": ["libs/feature-lock/src/index.ts"],
+      "@storee/feature-lists": ["libs/feature-lists/src/index.ts"],
+      "@storee/data-access-lists": ["libs/data-access/lists/src/index.ts"],
       "@storee/ui": ["libs/ui/src/index.ts"],
       "@storee/util-i18n": ["libs/util/i18n/src/index.ts"],
       "@storee/util-auth": ["libs/util/auth/src/index.ts"]

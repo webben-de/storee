@@ -1,120 +1,149 @@
 {
-    "app": {
-        "name": "Storee",
-        "tagline": "Weiß immer, wo alles ist."
+  "app": {
+    "name": "Storee",
+    "tagline": "Weiß immer, wo alles ist."
+  },
+  "nav": {
+    "home": "Start",
+    "search": "Suche",
+    "lists": "Listen",
+    "graph": "Grafik",
+    "settings": "Einstellungen"
+  },
+  "home": {
+    "title": "Mein Lager",
+    "empty": "Noch keine Orte. Füge deinen ersten hinzu!",
+    "add_location": "Ort hinzufügen"
+  },
+  "location": {
+    "new": "Neuer Ort",
+    "edit": "Ort bearbeiten",
+    "name": "Name",
+    "description": "Beschreibung",
+    "icon": "Symbol",
+    "photo": "Foto",
+    "gps": "GPS-Koordinaten",
+    "sub_locations": "Unterorte",
+    "objects": "Objekte",
+    "empty_objects": "Noch keine Objekte hier.",
+    "add_object": "Objekt hinzufügen",
+    "add_sub_location": "Unterort hinzufügen",
+    "delete_confirm": "Diesen Ort und alle Inhalte löschen?"
+  },
+  "object": {
+    "new": "Neues Objekt",
+    "edit": "Objekt bearbeiten",
+    "name": "Name",
+    "description": "Beschreibung",
+    "category": "Kategorie",
+    "category_custom": "Eigene",
+    "category_placeholder": "Eigene Kategorie eingeben…",
+    "category_selected": "Ausgewählt",
+    "tags": "Tags",
+    "tags_placeholder": "Tag hinzufügen…",
+    "tags_hint": "Enter oder Komma drücken um einen Tag hinzuzufügen",
+    "quantity": "Menge",
+    "photo": "Foto",
+    "gps": "GPS-Metadaten",
+    "location": "Gespeichert in",
+    "move": "Verschieben nach…",
+    "history": "Verlauf",
+    "history_empty": "Keine Bewegungen aufgezeichnet.",
+    "delete_confirm": "Dieses Objekt löschen?"
+  },
+  "search": {
+    "placeholder": "Orte und Objekte suchen…",
+    "results_locations": "Orte",
+    "results_objects": "Objekte",
+    "no_results": "Keine Ergebnisse."
+  },
+  "graph": {
+    "title": "Lager-Karte",
+    "hint": "Klicke einen Kreis zum Hineinzoomen · Hintergrund zum Herauszoomen · Fokussierten Kreis zum Navigieren",
+    "zoomHint": "Klicke einen Kreis zum Hineinzoomen · Hintergrund zum Herauszoomen · Fokussierten Kreis zum Navigieren"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "pin": {
+      "title": "PIN-Sperre",
+      "set": "PIN festlegen",
+      "change": "PIN ändern",
+      "remove": "PIN entfernen",
+      "current": "Aktueller PIN",
+      "new": "Neuer PIN",
+      "confirm": "PIN bestätigen",
+      "mismatch": "PINs stimmen nicht überein.",
+      "wrong": "Falscher PIN."
     },
-    "nav": {
-        "home": "Start",
-        "search": "Suche",
-        "graph": "Grafik",
-        "settings": "Einstellungen"
-    },
-    "home": {
-        "title": "Mein Lager",
-        "empty": "Noch keine Orte. Füge deinen ersten hinzu!",
-        "add_location": "Ort hinzufügen"
-    },
-    "location": {
-        "new": "Neuer Ort",
-        "edit": "Ort bearbeiten",
-        "name": "Name",
-        "description": "Beschreibung",
-        "icon": "Symbol",
-        "photo": "Foto",
-        "gps": "GPS-Koordinaten",
-        "sub_locations": "Unterorte",
-        "objects": "Objekte",
-        "empty_objects": "Noch keine Objekte hier.",
-        "add_object": "Objekt hinzufügen",
-        "add_sub_location": "Unterort hinzufügen",
-        "delete_confirm": "Diesen Ort und alle Inhalte löschen?"
-    },
-    "object": {
-        "new": "Neues Objekt",
-        "edit": "Objekt bearbeiten",
-        "name": "Name",
-        "description": "Beschreibung",
-        "category": "Kategorie",
-        "tags": "Tags",
-        "quantity": "Menge",
-        "photo": "Foto",
-        "gps": "GPS-Metadaten",
-        "location": "Gespeichert in",
-        "move": "Verschieben nach…",
-        "history": "Verlauf",
-        "history_empty": "Keine Bewegungen aufgezeichnet.",
-        "delete_confirm": "Dieses Objekt löschen?"
-    },
-    "search": {
-        "placeholder": "Orte und Objekte suchen…",
-        "results_locations": "Orte",
-        "results_objects": "Objekte",
-        "no_results": "Keine Ergebnisse."
-    },
-    "graph": {
-        "title": "Lager-Karte",
-        "hint": "Klicke einen Kreis zum Hineinzoomen · Hintergrund zum Herauszoomen · Fokussierten Kreis zum Navigieren",
-        "zoomHint": "Klicke einen Kreis zum Hineinzoomen · Hintergrund zum Herauszoomen · Fokussierten Kreis zum Navigieren"
-    },
-    "settings": {
-        "title": "Einstellungen",
-        "pin": {
-            "title": "PIN-Sperre",
-            "set": "PIN festlegen",
-            "change": "PIN ändern",
-            "remove": "PIN entfernen",
-            "current": "Aktueller PIN",
-            "new": "Neuer PIN",
-            "confirm": "PIN bestätigen",
-            "mismatch": "PINs stimmen nicht überein.",
-            "wrong": "Falscher PIN."
-        },
-        "language": "Sprache",
-        "theme": "Design",
-        "theme_light": "Hell",
-        "theme_dark": "Dunkel",
-        "backup": "Sicherung & Wiederherstellung",
-        "export": "JSON exportieren",
-        "import": "JSON importieren",
-        "import_confirm": "Dies ersetzt alle deine Daten. Fortfahren?"
-    },
-    "auth": {
-        "loginTitle": "Willkommen zurück",
-        "loginHint": "Melde dich bei Storee an.",
-        "registerTitle": "Konto erstellen",
-        "registerHint": "Fange an, deine Dinge zu verwalten.",
-        "email": "E-Mail",
-        "password": "Passwort",
-        "loginBtn": "Anmelden",
-        "registerBtn": "Konto erstellen",
-        "noAccount": "Noch kein Konto?",
-        "hasAccount": "Bereits ein Konto?",
-        "registerLink": "Registrieren",
-        "loginLink": "Anmelden"
-    },
-    "lock": {
-        "title": "PIN eingeben",
-        "hint": "Gib deinen PIN ein, um Storee zu entsperren.",
-        "wrong": "Falscher PIN. Nochmal versuchen.",
-        "unlock": "Entsperren"
-    },
-    "label": {
-        "title": "Etikett drucken",
-        "copy": "Kopieren",
-        "copied": "Kopiert!",
-        "download": "PNG herunterladen",
-        "print": "Drucken"
-    },
-    "common": {
-        "save": "Speichern",
-        "cancel": "Abbrechen",
-        "delete": "Löschen",
-        "edit": "Bearbeiten",
-        "back": "Zurück",
-        "loading": "Laden…",
-        "error": "Ein Fehler ist aufgetreten.",
-        "confirm": "Bestätigen",
-        "yes": "Ja",
-        "no": "Nein"
-    }
+    "language": "Sprache",
+    "theme": "Design",
+    "theme_light": "Hell",
+    "theme_dark": "Dunkel",
+    "backup": "Sicherung & Wiederherstellung",
+    "export": "JSON exportieren",
+    "import": "JSON importieren",
+    "import_confirm": "Dies ersetzt alle deine Daten. Fortfahren?"
+  },
+  "auth": {
+    "loginTitle": "Willkommen zurück",
+    "loginHint": "Melde dich bei Storee an.",
+    "registerTitle": "Konto erstellen",
+    "registerHint": "Fange an, deine Dinge zu verwalten.",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "loginBtn": "Anmelden",
+    "registerBtn": "Konto erstellen",
+    "noAccount": "Noch kein Konto?",
+    "hasAccount": "Bereits ein Konto?",
+    "registerLink": "Registrieren",
+    "loginLink": "Anmelden"
+  },
+  "lock": {
+    "title": "PIN eingeben",
+    "hint": "Gib deinen PIN ein, um Storee zu entsperren.",
+    "wrong": "Falscher PIN. Nochmal versuchen.",
+    "unlock": "Entsperren"
+  },
+  "label": {
+    "title": "Etikett drucken",
+    "copy": "Kopieren",
+    "copied": "Kopiert!",
+    "download": "PNG herunterladen",
+    "print": "Drucken"
+  },
+  "lists": {
+    "title": "Meine Listen",
+    "new": "Neue Liste",
+    "name_placeholder": "Listenname…",
+    "desc_placeholder": "Beschreibung (optional)",
+    "empty_title": "Noch keine Listen",
+    "empty_hint": "Erstelle Packlisten, Einkaufslisten oder beliebige Checklisten deiner gespeicherten Objekte.",
+    "empty_items": "Noch keine Einträge. Füge Objekte oder eigene Einträge hinzu.",
+    "list_single": "Liste",
+    "list_plural": "Listen",
+    "item_single": "Eintrag",
+    "item_plural": "Einträge",
+    "checked": "abgehakt",
+    "items_done": "Einträge erledigt",
+    "all_done": "Alles eingepackt!",
+    "uncheck_all": "Alle abhaken rückgängig",
+    "add_item": "Einträge hinzufügen",
+    "from_objects": "Aus Objekten",
+    "custom_item": "Eigener Eintrag",
+    "search_objects": "Objekte suchen…",
+    "custom_placeholder": "Eigener Eintragsname…",
+    "toggle": "Eintrag umschalten"
+  },
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "back": "Zurück",
+    "loading": "Laden…",
+    "error": "Ein Fehler ist aufgetreten.",
+    "confirm": "Bestätigen",
+    "yes": "Ja",
+    "no": "Nein"
+  }
 }
