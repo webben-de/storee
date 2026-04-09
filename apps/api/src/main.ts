@@ -1,5 +1,6 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
@@ -11,7 +12,11 @@ import { AppModule } from './app/app.module';
 };
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // Increase body-parser limit for JSON payloads (default is 100 KB)
+  app.useBodyParser('json', { limit: '20mb' });
+  app.useBodyParser('urlencoded', { extended: true, limit: '20mb' });
 
   // Global prefix
   app.setGlobalPrefix('api');
