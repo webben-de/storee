@@ -1,119 +1,120 @@
 {
-  "app": {
-    "name": "Storee",
-    "tagline": "Know where everything is. Always."
-  },
-  "nav": {
-    "home": "Home",
-    "search": "Search",
-    "graph": "Graph",
-    "settings": "Settings"
-  },
-  "home": {
-    "title": "My Storage",
-    "empty": "No locations yet. Add your first one!",
-    "add_location": "Add Location"
-  },
-  "location": {
-    "new": "New Location",
-    "edit": "Edit Location",
-    "name": "Name",
-    "description": "Description",
-    "icon": "Icon",
-    "photo": "Photo",
-    "gps": "GPS Coordinates",
-    "sub_locations": "Sub-locations",
-    "objects": "Objects",
-    "empty_objects": "No objects stored here yet.",
-    "add_object": "Add Object",
-    "add_sub_location": "Add Sub-location",
-    "delete_confirm": "Delete this location and all its contents?"
-  },
-  "object": {
-    "new": "New Object",
-    "edit": "Edit Object",
-    "name": "Name",
-    "description": "Description",
-    "category": "Category",
-    "tags": "Tags",
-    "quantity": "Quantity",
-    "photo": "Photo",
-    "gps": "GPS Metadata",
-    "location": "Stored in",
-    "move": "Move to…",
-    "history": "Move History",
-    "history_empty": "No moves recorded.",
-    "delete_confirm": "Delete this object?"
-  },
-  "search": {
-    "placeholder": "Search locations and objects…",
-    "results_locations": "Locations",
-    "results_objects": "Objects",
-    "no_results": "No results found."
-  },
-  "graph": {
-    "title": "Storage Graph",
-    "hint": "Click a node to navigate."
-  },
-  "settings": {
-    "title": "Settings",
-    "pin": {
-      "title": "PIN Lock",
-      "set": "Set PIN",
-      "change": "Change PIN",
-      "remove": "Remove PIN",
-      "current": "Current PIN",
-      "new": "New PIN",
-      "confirm": "Confirm PIN",
-      "mismatch": "PINs do not match.",
-      "wrong": "Incorrect PIN."
+    "app": {
+        "name": "Storee",
+        "tagline": "Know where everything is. Always."
     },
-    "language": "Language",
-    "theme": "Theme",
-    "theme_light": "Light",
-    "theme_dark": "Dark",
-    "backup": "Backup & Restore",
-    "export": "Export JSON",
-    "import": "Import JSON",
-    "import_confirm": "This will replace all your data. Continue?"
-  },
-  "auth": {
-    "loginTitle": "Welcome back",
-    "loginHint": "Sign in to your Storee account.",
-    "registerTitle": "Create account",
-    "registerHint": "Start tracking your belongings.",
-    "email": "Email",
-    "password": "Password",
-    "loginBtn": "Sign in",
-    "registerBtn": "Create account",
-    "noAccount": "Don't have an account?",
-    "hasAccount": "Already have an account?",
-    "registerLink": "Sign up",
-    "loginLink": "Sign in"
-  },
-  "lock": {
-    "title": "Enter PIN",
-    "hint": "Enter your PIN to unlock Storee.",
-    "wrong": "Incorrect PIN. Try again.",
-    "unlock": "Unlock"
-  },
-  "label": {
-    "title": "Print Label",
-    "copy": "Copy",
-    "copied": "Copied!",
-    "download": "Download PNG",
-    "print": "Print"
-  },
-  "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "back": "Back",
-    "loading": "Loading…",
-    "error": "Something went wrong.",
-    "confirm": "Confirm",
-    "yes": "Yes",
-    "no": "No"
-  }
+    "nav": {
+        "home": "Home",
+        "search": "Search",
+        "graph": "Graph",
+        "settings": "Settings"
+    },
+    "home": {
+        "title": "My Storage",
+        "empty": "No locations yet. Add your first one!",
+        "add_location": "Add Location"
+    },
+    "location": {
+        "new": "New Location",
+        "edit": "Edit Location",
+        "name": "Name",
+        "description": "Description",
+        "icon": "Icon",
+        "photo": "Photo",
+        "gps": "GPS Coordinates",
+        "sub_locations": "Sub-locations",
+        "objects": "Objects",
+        "empty_objects": "No objects stored here yet.",
+        "add_object": "Add Object",
+        "add_sub_location": "Add Sub-location",
+        "delete_confirm": "Delete this location and all its contents?"
+    },
+    "object": {
+        "new": "New Object",
+        "edit": "Edit Object",
+        "name": "Name",
+        "description": "Description",
+        "category": "Category",
+        "tags": "Tags",
+        "quantity": "Quantity",
+        "photo": "Photo",
+        "gps": "GPS Metadata",
+        "location": "Stored in",
+        "move": "Move to…",
+        "history": "Move History",
+        "history_empty": "No moves recorded.",
+        "delete_confirm": "Delete this object?"
+    },
+    "search": {
+        "placeholder": "Search locations and objects…",
+        "results_locations": "Locations",
+        "results_objects": "Objects",
+        "no_results": "No results found."
+    },
+    "graph": {
+        "title": "Storage Map",
+        "hint": "Click a circle to zoom in · Click background to zoom out · Click focused circle to navigate",
+        "zoomHint": "Click a circle to zoom in · Click background to zoom out · Click focused circle to navigate"
+    },
+    "settings": {
+        "title": "Settings",
+        "pin": {
+            "title": "PIN Lock",
+            "set": "Set PIN",
+            "change": "Change PIN",
+            "remove": "Remove PIN",
+            "current": "Current PIN",
+            "new": "New PIN",
+            "confirm": "Confirm PIN",
+            "mismatch": "PINs do not match.",
+            "wrong": "Incorrect PIN."
+        },
+        "language": "Language",
+        "theme": "Theme",
+        "theme_light": "Light",
+        "theme_dark": "Dark",
+        "backup": "Backup & Restore",
+        "export": "Export JSON",
+        "import": "Import JSON",
+        "import_confirm": "This will replace all your data. Continue?"
+    },
+    "auth": {
+        "loginTitle": "Welcome back",
+        "loginHint": "Sign in to your Storee account.",
+        "registerTitle": "Create account",
+        "registerHint": "Start tracking your belongings.",
+        "email": "Email",
+        "password": "Password",
+        "loginBtn": "Sign in",
+        "registerBtn": "Create account",
+        "noAccount": "Don't have an account?",
+        "hasAccount": "Already have an account?",
+        "registerLink": "Sign up",
+        "loginLink": "Sign in"
+    },
+    "lock": {
+        "title": "Enter PIN",
+        "hint": "Enter your PIN to unlock Storee.",
+        "wrong": "Incorrect PIN. Try again.",
+        "unlock": "Unlock"
+    },
+    "label": {
+        "title": "Print Label",
+        "copy": "Copy",
+        "copied": "Copied!",
+        "download": "Download PNG",
+        "print": "Print"
+    },
+    "common": {
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "back": "Back",
+        "loading": "Loading…",
+        "error": "Something went wrong.",
+        "confirm": "Confirm",
+        "yes": "Yes",
+        "no": "No"
+    }
 }

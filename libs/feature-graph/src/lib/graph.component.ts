@@ -1,5 +1,11 @@
 import {
-  Component, inject, ElementRef, ViewChild, AfterViewInit, OnDestroy, NgZone,
+  Component,
+  inject,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
+  OnDestroy,
+  NgZone,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -8,59 +14,60 @@ import { LocationStore } from '@storee/data-access-locations';
 import { ObjectStore } from '@storee/data-access-objects';
 import * as d3 from 'd3';
 
-interface GraphNode {
+interface PackNode {
   id: string;
   name: string;
   type: 'root' | 'location' | 'object';
-  children?: GraphNode[];
+  children?: PackNode[];
+  value?: number;
 }
 
 /** Returns whether the OS/browser prefers dark mode */
 function prefersDark(): boolean {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ||
-    document.documentElement.classList.contains('dark');
+  return (
+    window.matchMedia('(prefers-color-scheme: dark)').matches ||
+    document.documentElement.classList.contains('dark')
+  );
 }
 
 @Component({
   selector: 'lib-graph',
   standalone: true,
   imports: [CommonModule, TranslocoModule],
-  styles: [`
-    :host { display: block; }
+  styles: [
+    `
+      :host {
+        display: block;
+      }
 
-    .graph-node { cursor: pointer; }
-    .graph-node circle {
-      transition: r 0.2s cubic-bezier(0.16,1,0.3,1),
-                  filter 0.2s ease;
-    }
-    .graph-node:hover circle {
-      filter: brightness(1.08) drop-shadow(0 2px 8px rgba(59,130,246,0.35));
-    }
-    .graph-node.root-node { cursor: default; }
+      svg {
+        cursor: pointer;
+      }
 
-    .node-enter {
-      animation: nodeIn 0.45s cubic-bezier(0.16,1,0.3,1) both;
-    }
-    @keyframes nodeIn {
-      from { opacity: 0; transform: scale(0.5); }
-      to   { opacity: 1; transform: scale(1); }
-    }
+      .pack-circle {
+        transition:
+          fill 0.2s ease,
+          stroke 0.2s ease;
+      }
+      .pack-circle:hover {
+        filter: brightness(1.06);
+      }
 
-    .link-enter {
-      animation: linkIn 0.5s ease-out both;
-    }
-    @keyframes linkIn {
-      from { stroke-dashoffset: var(--len); }
-      to   { stroke-dashoffset: 0; }
-    }
-  `],
+      .pack-label {
+        pointer-events: none;
+        user-select: none;
+      }
+    `,
+  ],
   template: `
     <div class="max-w-full px-4 lg:px-6 py-8">
       <!-- Header -->
       <div class="mb-6 flex items-start justify-between gap-4">
         <div>
           <p class="section-label mb-1">{{ 'nav.graph' | transloco }}</p>
-          <h1 class="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+          <h1
+            class="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50"
+          >
             {{ 'graph.title' | transloco }}
           </h1>
           <p class="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400">
@@ -68,19 +75,25 @@ function prefersDark(): boolean {
           </p>
         </div>
         <!-- Legend -->
-        <div class="hidden sm:flex flex-col gap-2 text-xs text-zinc-500 dark:text-zinc-400 shrink-0 pt-1">
+        <div
+          class="hidden sm:flex flex-col gap-2 text-xs text-zinc-500 dark:text-zinc-400 shrink-0 pt-1"
+        >
           <div class="flex items-center gap-2">
-            <span class="w-3 h-3 rounded-full bg-brand-500 ring-2 ring-brand-200 dark:ring-brand-800 shrink-0"></span>
+            <span
+              class="w-3 h-3 rounded-full bg-brand-500 ring-2 ring-brand-200 dark:ring-brand-800 shrink-0"
+            ></span>
             Location
           </div>
           <div class="flex items-center gap-2">
-            <span class="w-3 h-3 rounded-full bg-zinc-400 dark:bg-zinc-500 ring-2 ring-zinc-200 dark:ring-zinc-700 shrink-0"></span>
+            <span
+              class="w-3 h-3 rounded-full bg-zinc-400 dark:bg-zinc-500 ring-2 ring-zinc-200 dark:ring-zinc-700 shrink-0"
+            ></span>
             Object
           </div>
         </div>
       </div>
 
-      <!-- Graph canvas -->
+      <!-- Chart canvas -->
       <div
         #svgContainer
         class="w-full rounded-2xl border border-zinc-200/80 dark:border-zinc-800
@@ -89,8 +102,10 @@ function prefersDark(): boolean {
       ></div>
 
       <!-- Controls hint -->
-      <p class="mt-3 text-xs text-zinc-400 dark:text-zinc-600 text-center select-none">
-        Scroll to zoom · Drag to pan · Click a node to navigate
+      <p
+        class="mt-3 text-xs text-zinc-400 dark:text-zinc-600 text-center select-none"
+      >
+        {{ 'graph.zoomHint' | transloco }}
       </p>
     </div>
   `,
@@ -99,12 +114,11 @@ export class GraphComponent implements AfterViewInit, OnDestroy {
   @ViewChild('svgContainer') container!: ElementRef<HTMLDivElement>;
 
   private locationStore = inject(LocationStore);
-  private objectStore   = inject(ObjectStore);
-  private router        = inject(Router);
-  private zone          = inject(NgZone);
+  private objectStore = inject(ObjectStore);
+  private router = inject(Router);
+  private zone = inject(NgZone);
 
   private resizeObserver?: ResizeObserver;
-  private svg?: d3.Selection<SVGSVGElement, unknown, null, undefined>;
 
   ngAfterViewInit() {
     this.zone.runOutsideAngular(() => {
@@ -120,16 +134,21 @@ export class GraphComponent implements AfterViewInit, OnDestroy {
 
   // ─── Data ─────────────────────────────────────────────────────────────────
 
-  private buildTree(): GraphNode {
+  private buildTree(): PackNode {
     const locations = this.locationStore.locations();
-    const objects   = this.objectStore.objects();
+    const objects = this.objectStore.objects();
 
-    const nodeMap = new Map<string, GraphNode>();
+    const nodeMap = new Map<string, PackNode>();
     for (const l of locations) {
-      nodeMap.set(l.id, { id: l.id, name: l.name, type: 'location', children: [] });
+      nodeMap.set(l.id, {
+        id: l.id,
+        name: l.name,
+        type: 'location',
+        children: [],
+      });
     }
 
-    const roots: GraphNode[] = [];
+    const roots: PackNode[] = [];
     for (const l of locations) {
       const node = nodeMap.get(l.id)!;
       if (l.parent_id && nodeMap.has(l.parent_id)) {
@@ -142,222 +161,234 @@ export class GraphComponent implements AfterViewInit, OnDestroy {
     for (const o of objects) {
       const parent = nodeMap.get(o.location_id);
       if (parent) {
-        parent.children!.push({ id: o.id, name: o.name, type: 'object' });
+        parent.children!.push({
+          id: o.id,
+          name: o.name,
+          type: 'object',
+          value: 1,
+        });
       }
     }
 
-    return { id: 'root', name: 'Storee', type: 'root', children: roots };
+    // Give empty locations a minimum size so they're still visible
+    for (const node of nodeMap.values()) {
+      if (!node.children?.length) {
+        node.value = 1;
+      }
+    }
+
+    return {
+      id: 'root',
+      name: 'Storee',
+      type: 'root',
+      children: roots.length
+        ? roots
+        : [{ id: '__empty', name: '', type: 'object', value: 1 }],
+    };
   }
 
   // ─── Render ───────────────────────────────────────────────────────────────
 
   private renderGraph() {
-    const el    = this.container.nativeElement;
-    const W     = el.clientWidth  || 800;
-    const H     = el.clientHeight || 480;
-    const dark  = prefersDark();
+    const el = this.container.nativeElement;
+    const W = el.clientWidth || 800;
+    const H = el.clientHeight || 480;
+    const dark = prefersDark();
 
     const COLORS = {
-      bg:           dark ? '#18181b' : '#ffffff',
-      bgCanvas:     dark ? '#0f0f11' : '#fafafa',
-      linkStroke:   dark ? '#3f3f46' : '#e4e4e7',
-      linkHighlight:dark ? '#3b82f6' : '#93c5fd',
-      rootFill:     dark ? '#2563eb' : '#3b82f6',
-      rootRing:     dark ? '#1d4ed8' : '#2563eb',
-      locFill:      dark ? '#1e40af' : '#eff6ff',
-      locStroke:    dark ? '#3b82f6' : '#3b82f6',
-      locText:      dark ? '#93c5fd' : '#1d4ed8',
-      objFill:      dark ? '#27272a' : '#f4f4f5',
-      objStroke:    dark ? '#52525b' : '#a1a1aa',
-      objText:      dark ? '#a1a1aa' : '#52525b',
-      labelColor:   dark ? '#e4e4e7' : '#18181b',
-      labelSub:     dark ? '#71717a' : '#a1a1aa',
+      bg: dark ? '#18181b' : '#ffffff',
+      rootFill: dark ? 'rgba(37,99,235,0.15)' : 'rgba(59,130,246,0.08)',
+      rootStroke: dark ? '#3b82f6' : '#93c5fd',
+      locFills: dark
+        ? [
+            'rgba(29,78,216,0.45)',
+            'rgba(30,64,175,0.35)',
+            'rgba(37,99,235,0.25)',
+            'rgba(59,130,246,0.18)',
+          ]
+        : [
+            'rgba(219,234,254,0.9)',
+            'rgba(191,219,254,0.8)',
+            'rgba(147,197,253,0.6)',
+            'rgba(96,165,250,0.4)',
+          ],
+      locStroke: dark ? '#3b82f6' : '#3b82f6',
+      objFill: dark ? '#27272a' : '#f4f4f5',
+      objStroke: dark ? '#52525b' : '#d4d4d8',
+      locLabel: dark ? '#93c5fd' : '#1d4ed8',
+      objLabel: dark ? '#a1a1aa' : '#71717a',
+      rootLabel: dark ? '#e4e4e7' : '#18181b',
     };
 
-    // Clear
+    // Clear previous render
     d3.select(el).selectAll('*').remove();
 
+    // Build hierarchy & pack layout
     const data = this.buildTree();
-    const root = d3.hierarchy(data);
+    const root = d3
+      .hierarchy<PackNode>(data)
+      .sum((d) => d.value ?? 0)
+      .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
 
-    // Dynamic node spacing
-    const nodeCount = root.descendants().length;
-    const nodeSpacingY = Math.max(48, Math.min(72, H / Math.max(nodeCount * 0.5, 4)));
-    const nodeSpacingX = Math.max(200, Math.min(260, W / Math.max(root.height + 1, 2)));
+    const pack = d3.pack<PackNode>().size([W, H]).padding(4);
+    pack(root);
 
-    const treeLayout = d3.tree<GraphNode>().nodeSize([nodeSpacingY, nodeSpacingX]);
-    treeLayout(root);
+    type PackedNode = d3.HierarchyCircularNode<PackNode>;
 
-    const nodes = root.descendants();
-    const links = root.links();
-    const minX  = Math.min(...nodes.map((n) => n.x ?? 0));
-    const maxX  = Math.max(...nodes.map((n) => n.x ?? 0));
-    const minY  = Math.min(...nodes.map((n) => (n as d3.HierarchyPointNode<GraphNode>).y ?? 0));
-    const maxY  = Math.max(...nodes.map((n) => (n as d3.HierarchyPointNode<GraphNode>).y ?? 0));
-    const treeW = maxY - minY + nodeSpacingX;
-    const treeH = maxX - minX + nodeSpacingY * 2;
-
-    // SVG
-    const svg = d3.select(el).append('svg')
-      .attr('width', W).attr('height', H)
+    // ─── SVG ────────────────────────────────────────────────────────────────
+    const svg = d3
+      .select(el)
+      .append('svg')
+      .attr('viewBox', `0 0 ${W} ${H}`)
+      .attr('width', W)
+      .attr('height', H)
       .attr('role', 'img')
-      .attr('aria-label', 'Storage hierarchy graph')
-      .style('background', COLORS.bg);
-    this.svg = svg;
+      .attr('aria-label', 'Storage circle packing chart')
+      .style('background', COLORS.bg)
+      .style('display', 'block');
 
-    // Defs — gradient for links, glow filter
-    const defs = svg.append('defs');
-
-    defs.append('filter').attr('id', 'glow')
-      .html(`
-        <feGaussianBlur stdDeviation="3" result="blur"/>
-        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-      `);
-
-    defs.append('linearGradient')
-      .attr('id', 'link-gradient')
-      .attr('gradientUnits', 'userSpaceOnUse')
-      .html(`
-        <stop offset="0%" stop-color="${COLORS.linkHighlight}" stop-opacity="0.7"/>
-        <stop offset="100%" stop-color="${COLORS.linkStroke}" stop-opacity="0.4"/>
-      `);
-
-    // Zoom & pan — create g FIRST so the zoom handler can reference it
     const g = svg.append('g');
 
-    const zoomBehavior = d3.zoom<SVGSVGElement, unknown>()
-      .scaleExtent([0.25, 3])
-      .on('zoom', (event) => {
-        g.attr('transform', event.transform.toString());
-      });
+    // ─── Track focus for zoom ────────────────────────────────────────────────
+    let focus = root as PackedNode;
 
-    svg.call(zoomBehavior);
+    const packed = root as PackedNode;
+    const view = { x: packed.x, y: packed.y, r: packed.r };
 
-    // Initial transform — center the tree
-    const initX = Math.max(60, (W - (maxY - minY)) / 2);
-    const initY = H / 2 - (minX + maxX) / 2;
-    const initTransform = d3.zoomIdentity.translate(initX, initY);
-    svg.call(zoomBehavior.transform, initTransform);
+    function zoomTo(v: { x: number; y: number; r: number }) {
+      const k = Math.min(W, H) / 2 / v.r;
+      g.attr(
+        'transform',
+        `translate(${W / 2},${H / 2}) scale(${k}) translate(${-v.x},${-v.y})`,
+      );
+    }
 
-    // ─── Links ──────────────────────────────────────────────────────────────
-    const linkGenerator = d3.linkHorizontal<
-      d3.HierarchyPointLink<GraphNode>,
-      d3.HierarchyPointNode<GraphNode>
-    >().x((d) => d.y).y((d) => d.x);
+    zoomTo(view);
 
-    g.selectAll<SVGPathElement, d3.HierarchyPointLink<GraphNode>>('.link')
-      .data(links as d3.HierarchyPointLink<GraphNode>[])
-      .join('path')
-      .attr('class', 'link')
-      .attr('fill', 'none')
-      .attr('stroke', COLORS.linkStroke)
-      .attr('stroke-width', 1.5)
-      .attr('stroke-linecap', 'round')
-      .attr('d', linkGenerator as never)
-      // Dash-draw entrance animation
-      .each(function() {
-        const len = (this as SVGPathElement).getTotalLength?.() ?? 200;
-        d3.select(this)
-          .attr('stroke-dasharray', len)
-          .attr('stroke-dashoffset', len)
-          .transition()
-          .delay((_, i) => i * 20)
-          .duration(600)
-          .ease(d3.easeCubicOut)
-          .attr('stroke-dashoffset', 0);
-      });
-
-    // ─── Nodes ──────────────────────────────────────────────────────────────
-    const node = g.selectAll<SVGGElement, d3.HierarchyPointNode<GraphNode>>('.graph-node')
-      .data(nodes as d3.HierarchyPointNode<GraphNode>[])
-      .join('g')
-      .attr('class', (d) => `graph-node${d.data.type === 'root' ? ' root-node' : ''}`)
-      .attr('transform', (d) => `translate(${d.y},${d.x})`)
-      .style('opacity', 0)
-      .on('click', (_, d) => {
-        if (d.data.id === 'root') return;
-        this.zone.run(() => {
-          const path = d.data.type === 'location'
-            ? `/location/${d.data.id}`
-            : `/object/${d.data.id}`;
-          this.router.navigateByUrl(path);
-        });
-      });
-
-    // Staggered fade-in
-    node.transition()
-      .delay((_, i) => i * 35 + 100)
-      .duration(400)
-      .ease(d3.easeBackOut.overshoot(1.2))
-      .style('opacity', 1);
-
-    // Node circles
-    node.append('circle')
-      .attr('r', (d) => d.data.type === 'root' ? 22 : d.data.type === 'location' ? 18 : 14)
+    // ─── Circles ────────────────────────────────────────────────────────────
+    const node = g
+      .selectAll<SVGCircleElement, PackedNode>('circle')
+      .data(root.descendants() as PackedNode[])
+      .join('circle')
+      .attr('class', 'pack-circle')
+      .attr('cx', (d) => d.x)
+      .attr('cy', (d) => d.y)
+      .attr('r', (d) => d.r)
       .attr('fill', (d) => {
-        if (d.data.type === 'root')     return COLORS.rootFill;
-        if (d.data.type === 'location') return COLORS.locFill;
-        return COLORS.objFill;
+        if (!d.parent) return COLORS.rootFill;
+        if (d.data.type === 'object') return COLORS.objFill;
+        const depth = Math.min(d.depth - 1, COLORS.locFills.length - 1);
+        return COLORS.locFills[depth];
       })
       .attr('stroke', (d) => {
-        if (d.data.type === 'root')     return COLORS.rootRing;
-        if (d.data.type === 'location') return COLORS.locStroke;
-        return COLORS.objStroke;
+        if (!d.parent) return COLORS.rootStroke;
+        if (d.data.type === 'object') return COLORS.objStroke;
+        return COLORS.locStroke;
       })
-      .attr('stroke-width', (d) => d.data.type === 'root' ? 2.5 : 1.5);
-
-    // Hover ring
-    node.filter((d) => d.data.type !== 'root')
-      .on('mouseenter', function(_, d) {
-        d3.select(this).select('circle')
-          .transition().duration(150).ease(d3.easeBackOut.overshoot(2))
-          .attr('r', d.data.type === 'location' ? 22 : 17)
-          .attr('stroke-width', 2);
-      })
-      .on('mouseleave', function(_, d) {
-        d3.select(this).select('circle')
-          .transition().duration(200)
-          .attr('r', d.data.type === 'location' ? 18 : 14)
-          .attr('stroke-width', 1.5);
+      .attr('stroke-width', (d) =>
+        d.parent ? (d.data.type === 'object' ? 1 : 1.5) : 2,
+      )
+      .style('opacity', 0)
+      .on('click', (event, d) => {
+        event.stopPropagation();
+        if (d === focus) {
+          // Click focused location → navigate to it (leaf objects navigate directly)
+          if (d.data.type !== 'root' && d.data.id !== '__empty') {
+            this.zone.run(() => {
+              const path =
+                d.data.type === 'location'
+                  ? `/location/${d.data.id}`
+                  : `/object/${d.data.id}`;
+              this.router.navigateByUrl(path);
+            });
+          }
+          return;
+        }
+        // Zoom into clicked node (or zoom out if clicking background / root)
+        zoom(d.children ? d : (d.parent ?? (root as PackedNode)));
       });
 
-    // Node icons (Unicode — SVG text)
-    node.append('text')
+    // Fade in
+    node
+      .transition()
+      .delay((_, i) => i * 8)
+      .duration(350)
+      .ease(d3.easeBackOut.overshoot(1.1))
+      .style('opacity', 1);
+
+    // ─── Labels ─────────────────────────────────────────────────────────────
+    const label = g
+      .selectAll<SVGTextElement, PackedNode>('text')
+      .data(root.descendants() as PackedNode[])
+      .join('text')
+      .attr('class', 'pack-label')
+      .attr('x', (d) => d.x)
+      .attr('y', (d) => d.y)
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'central')
-      .attr('font-size', (d) => d.data.type === 'root' ? 14 : d.data.type === 'location' ? 12 : 10)
-      .attr('fill', (d) => {
-        if (d.data.type === 'root')     return '#ffffff';
-        if (d.data.type === 'location') return COLORS.locText;
-        return COLORS.objText;
+      .attr('font-family', 'Outfit, system-ui, sans-serif')
+      .attr('font-size', (d) => {
+        if (!d.parent) return Math.max(10, Math.min(16, d.r / 4));
+        if (d.data.type === 'object')
+          return Math.max(8, Math.min(12, d.r * 0.55));
+        return Math.max(9, Math.min(14, d.r / 3.5));
       })
-      .attr('pointer-events', 'none')
+      .attr('font-weight', (d) =>
+        !d.parent || d.data.type === 'location' ? '600' : '400',
+      )
+      .attr('fill', (d) => {
+        if (!d.parent) return COLORS.rootLabel;
+        if (d.data.type === 'object') return COLORS.objLabel;
+        return COLORS.locLabel;
+      })
+      .style('opacity', 0)
       .text((d) => {
-        if (d.data.type === 'root')     return '⌂';
-        if (d.data.type === 'location') return '▤';
-        return '◈';
+        if (d.data.id === '__empty') return '';
+        const maxLen = Math.max(3, Math.floor(d.r / 5));
+        const name = d.data.name;
+        return name.length > maxLen ? name.slice(0, maxLen - 1) + '…' : name;
       });
 
-    // Node labels — name
-    node.append('text')
-      .attr('dy', (d) => (d.data.type === 'root' ? 32 : d.data.type === 'location' ? 28 : 24))
-      .attr('text-anchor', 'middle')
-      .attr('font-size', (d) => d.data.type === 'root' ? '12' : '11')
-      .attr('font-weight', (d) => d.data.type === 'root' ? '600' : '500')
-      .attr('fill', COLORS.labelColor)
-      .attr('pointer-events', 'none')
-      .attr('font-family', 'Outfit, system-ui, sans-serif')
-      .text((d) => d.data.name.length > 14 ? d.data.name.slice(0, 13) + '…' : d.data.name);
+    // Show labels for visible levels
+    function updateLabels(focusNode: PackedNode) {
+      label
+        .transition()
+        .duration(300)
+        .style('opacity', (d) => {
+          if (d === focusNode) return 1;
+          if (d.parent === focusNode) return d.r > 14 ? 1 : 0;
+          return 0;
+        });
+    }
 
-    // Depth / child count sub-label for locations
-    node.filter((d) => d.data.type === 'location' && (d.children?.length ?? 0) > 0)
-      .append('text')
-      .attr('dy', 40)
-      .attr('text-anchor', 'middle')
-      .attr('font-size', '9')
-      .attr('fill', COLORS.labelSub)
-      .attr('font-family', 'Outfit, system-ui, sans-serif')
-      .attr('pointer-events', 'none')
-      .text((d) => `${d.children!.length} ${d.children!.length === 1 ? 'child' : 'children'}`);
+    updateLabels(focus);
+
+    // ─── Zoom animation ─────────────────────────────────────────────────────
+    function zoom(targetNode: PackedNode) {
+      focus = targetNode;
+
+      svg
+        .transition()
+        .duration(600)
+        .ease(d3.easeCubicInOut)
+        .tween('zoom', () => {
+          const i = d3.interpolateZoom(
+            [view.x, view.y, view.r * 2],
+            [targetNode.x, targetNode.y, targetNode.r * 2],
+          );
+          return (t: number) => {
+            const [vx, vy, vr] = i(t);
+            view.x = vx;
+            view.y = vy;
+            view.r = vr / 2;
+            zoomTo(view);
+          };
+        });
+
+      updateLabels(targetNode);
+    }
+
+    // Click SVG background → zoom back to root
+    svg.on('click', () => zoom(root as PackedNode));
   }
 }
